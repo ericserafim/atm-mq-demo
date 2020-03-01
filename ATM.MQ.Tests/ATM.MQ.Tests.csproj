@@ -16,4 +16,9 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ATM.MQ.Application\ATM.MQ.Application.csproj" />
+    <ProjectReference Include="..\ATM.MQ.Core\ATM.MQ.Core.csproj" />
+  </ItemGroup>
+
 </Project>
