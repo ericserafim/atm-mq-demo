@@ -4,41 +4,41 @@ using ATM.MQ.Core.Interfaces.Services;
 using ATM.MQ.Core.Interfaces.Repositories;
 using System.Threading.Tasks;
 using ATM.MQ.Application.Exceptions;
+using ATM.MQ.Core.Interfaces.MQ;
 
 namespace ATM.MQ.Application.Services
 {
     public class MessageService : IMessageService<MessageData<Transaction>>
     {
+        public IMQProvider MQProvider { get; }
+
         public IMessageRepository<MessageData<Transaction>> Repository { get; }
 
-        public MessageService(IMessageRepository<MessageData<Transaction>> repository)
+        public MessageService(IMQProviderFactory providerFactory, IMessageRepository<MessageData<Transaction>> repository)
         {
+            this.MQProvider = providerFactory.Create();
             this.Repository = repository;
         }
 
-        public async Task<bool> SaveMessageAsync(MessageData<Transaction> message)
+        public async Task<bool> SendMessageAsync(string queueName, MessageData<Transaction> message)
         {
-            return await Repository.SaveMessageAsync(message ?? throw new InvalidMessageDataException("Message should not be null"));
+            if (message is null)
+                throw new InvalidMessageDataException("Message should not be null");
+
+            await MQProvider.ConnectAsync();
+            await MQProvider.PublishMessageAsync(queueName, message);
+            await Repository.SaveMessageAsync(message);
+
+            return true;
         }
 
-        public async Task<MessageData<Transaction>> GetMessageAsync(long id)
+        public async Task SubscribeQueueAsync(string queueName)
         {
-            try
-            {
-                return await Repository.GetMessageAsync(id);
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
-        }
-
-        public async Task<bool> DeleteMessageAsync(long id)
-        {
-            _ = await Repository.GetMessageAsync(id) ??
-            throw new DataNotFoundException($"Message with Id {id} was not found");
-
-            return await Repository.DeleteMessageAsync(id);            
+            if (string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException();
+                
+            await MQProvider.ConnectAsync();
+            await MQProvider.SubscribeQueueAsync(queueName);
         }
     }
 }

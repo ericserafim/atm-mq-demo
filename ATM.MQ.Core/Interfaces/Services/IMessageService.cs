@@ -1,16 +1,12 @@
 using System.Threading.Tasks;
-using ATM.MQ.Core.Interfaces.Repositories;
+using ATM.MQ.Core.Entities;
 
 namespace ATM.MQ.Core.Interfaces.Services
 {
     public interface IMessageService<T> where T : class
-    {
-        public IMessageRepository<T> Repository { get; }
-
-        Task<bool> DeleteMessageAsync(long id);
+    {        
+        Task<bool> SendMessageAsync(string queueName, MessageData<Transaction> message);
         
-        Task<T> GetMessageAsync(long id);
-
-        Task<bool> SaveMessageAsync(T message);
+        Task SubscribeQueueAsync(string queueName);
     }
 }
