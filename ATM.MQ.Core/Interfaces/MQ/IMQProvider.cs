@@ -10,5 +10,7 @@ namespace ATM.MQ.Core.Interfaces.MQ
         Task PublishMessageAsync<T>(string queueName, T message);
 
         Task SubscribeQueueAsync(string queueName);
+        
+        void Close();
     }
 }

@@ -90,7 +90,9 @@ namespace ATM.MQ.Tests.UnitTests.Application
         public void SubscribeQueue_Should_ThrowException_When_QueueNameIsNullOrEmptyOrWhiteSpace(string queueName)
         {
             //Arrange                    
+            var providerMock = new Mock<IMQProvider>();
             var factoryMock = new Mock<IMQProviderFactory>();        
+            factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
             var sut = new MessageService(factoryMock.Object, default);
 
             //Action
