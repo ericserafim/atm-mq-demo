@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ATM.MQ.Application\ATM.MQ.Application.csproj" />
     <ProjectReference Include="..\ATM.MQ.Core\ATM.MQ.Core.csproj" />
+    <ProjectReference Include="..\ATM.MQ.Repositories\ATM.MQ.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
