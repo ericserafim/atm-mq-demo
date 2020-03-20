@@ -4,7 +4,7 @@ namespace ATM.MQ.Core.Entities
 {
 	public class MessageData<T>
 	{
-		public long Id { get; set; }
+		public string Id { get; set; }
 
 		public T Body { get; set; }
 
