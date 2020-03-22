@@ -25,8 +25,8 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			var repoMock = new Mock<IMessageRepository<MessageData<Transaction>>>();
 
 
-			providerMock.Setup(s => s.ConnectAsync()).Verifiable();
-			providerMock.Setup(s => s.PublishMessageAsync(It.IsAny<string>(), message)).Verifiable();
+			providerMock.Setup(s => s.Connect()).Verifiable();
+			providerMock.Setup(s => s.PublishMessage(It.IsAny<string>(), message)).Verifiable();
 			factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
 
 			repoMock.Setup(s => s.SaveMessageAsync(It.IsAny<MessageData<Transaction>>()))
@@ -35,12 +35,12 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			var sut = new MessageService(factoryMock.Object, repoMock.Object);
 
 			//Action
-			var result = await sut.SendMessageAsync(queueName: string.Empty, message);
+			var result = await sut.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
 
 			//Assert    
 			result.Should().BeTrue();
-			providerMock.Verify(s => s.ConnectAsync(), Times.Once);
-			providerMock.Verify(s => s.PublishMessageAsync(It.IsAny<string>(), message), Times.Once);
+			providerMock.Verify(s => s.Connect(), Times.Once);
+			providerMock.Verify(s => s.PublishMessage(It.IsAny<string>(), message), Times.Once);
 			repoMock.Verify(x => x.SaveMessageAsync(It.IsAny<MessageData<Transaction>>()), Times.Once);
 		}
 
@@ -56,7 +56,7 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			var sut = new MessageService(factoryMock.Object, repoMock.Object);
 
 			//Action
-			Func<Task> result = async () => await sut.SendMessageAsync(queueName: string.Empty, message);
+			Func<Task> result = async () => await sut.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
 
 			//Assert    
 			result.Should().Throw<InvalidMessageDataException>();
@@ -69,8 +69,8 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			var factoryMock = new Mock<IMQProviderFactory>();
 			var providerMock = new Mock<IMQProvider>();
 			var repoMock = new Mock<IMessageRepository<MessageData<Transaction>>>();
-			providerMock.Setup(s => s.ConnectAsync()).Verifiable();
-			providerMock.Setup(s => s.SubscribeQueueAsync(It.IsAny<string>())).Verifiable();
+			providerMock.Setup(s => s.Connect()).Verifiable();
+			providerMock.Setup(s => s.SubscribeQueue(It.IsAny<string>())).Verifiable();
 			factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
 			var sut = new MessageService(factoryMock.Object, repoMock.Object);
 
@@ -79,8 +79,8 @@ namespace ATM.MQ.Tests.UnitTests.Application
 
 			//Assert    
 			result.Should().NotThrow();
-			providerMock.Verify(s => s.ConnectAsync(), Times.Once);
-			providerMock.Verify(s => s.SubscribeQueueAsync(It.IsAny<string>()), Times.Once);
+			providerMock.Verify(s => s.Connect(), Times.Once);
+			providerMock.Verify(s => s.SubscribeQueue(It.IsAny<string>()), Times.Once);
 		}
 
 		[Theory]

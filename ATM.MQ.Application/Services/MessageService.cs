@@ -19,15 +19,15 @@ namespace ATM.MQ.Application.Services
 			this.MQProvider = providerFactory.Create();
 			this.Repository = repository;
 
-			MQProvider.ConnectAsync().GetAwaiter().GetResult();
+			MQProvider.Connect();
 		}
 
-		public async Task<bool> SendMessageAsync(string queueName, MessageData<Transaction> message)
+		public async Task<bool> SendMessageAsync(string senderId, MessageData<Transaction> message)
 		{
 			if (message is null)
 				throw new InvalidMessageDataException("Message should not be null");
 
-			await MQProvider.PublishMessageAsync(queueName, message);
+			await Task.Factory.StartNew(() => MQProvider.PublishMessage(senderId, message));
 			await Repository.SaveMessageAsync(message);
 
 			return true;
@@ -38,7 +38,7 @@ namespace ATM.MQ.Application.Services
 			if (string.IsNullOrWhiteSpace(queueName))
 				throw new ArgumentNullException();
 
-			await MQProvider.SubscribeQueueAsync(queueName);
+			await Task.Factory.StartNew(() => MQProvider.SubscribeQueue(queueName));
 		}
 
 		public void Dispose()

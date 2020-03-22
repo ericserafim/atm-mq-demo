@@ -5,12 +5,11 @@ using ATM.MQ.Repositories;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Xunit;
 
 namespace ATM.MQ.Tests.IntegratedTest.Repositories
 {
-	public class MongoDbMessageRepositoryTest : IDisposable
+	public class MongoDbMessageRepositoryTest
 	{
 		private readonly MongoDbMessageRepository _repository;
 
@@ -20,18 +19,13 @@ namespace ATM.MQ.Tests.IntegratedTest.Repositories
 			.AddJsonFile("appsettings.json", optional: false)
 			.Build();
 
-			var settings = config.GetSection(nameof(DatabaseSettings)).As<DatabaseSettings>();
+			var settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
 
 			_repository = new MongoDbMessageRepository(settings);
 		}
 
-        public void Dispose()
-        {
-            //TODO Remove all test data
-        }
-
         [Fact]
-		public async Task Should_InsertOneMessageAsync()
+		public async Task SaveMessageAsync_Should_InsertOneMessage()
 		{
 			//Arrange
 			var fixture = new Fixture();
@@ -48,7 +42,7 @@ namespace ATM.MQ.Tests.IntegratedTest.Repositories
         [Theory]
 		[InlineData("907aa006-b499-468d-a68b-703bb39d87a9")]	
 		[InlineData("abbcdb2f-03b9-44b0-aea1-8502aab37df2")]	
-		public async Task Should_GetMessageAsync(string messageId)
+		public async Task GetMessageAsync_Should_GetMessage(string messageId)
 		{
 			//Act
 			var result = await _repository.GetMessageAsync(messageId);
@@ -58,7 +52,7 @@ namespace ATM.MQ.Tests.IntegratedTest.Repositories
 		}
 
 		[Fact]
-		public async Task Should_DeleteOneMessageAsync()
+		public async Task DeleteMessageAsync_Should_DeleteOneMessage()
 		{
 			//Arrange
 			var fixture = new Fixture();
