@@ -10,16 +10,16 @@ namespace ATM.MQ.Application.Services
 {
 	public class MessageService : IMessageService<MessageData<Transaction>>
 	{
-		public IMQProvider MQProvider { get; }
+		private readonly IMQProvider _mqProvider;
 
-		public IMessageRepository<MessageData<Transaction>> Repository { get; }
+		private readonly IMessageRepository<MessageData<Transaction>> _repository;
 
 		public MessageService(IMQProviderFactory providerFactory, IMessageRepository<MessageData<Transaction>> repository)
 		{
-			this.MQProvider = providerFactory.Create();
-			this.Repository = repository;
+			_mqProvider = providerFactory.Create();
+			_repository = repository;
 
-			MQProvider.Connect();
+			_mqProvider.Connect();
 		}
 
 		public async Task<bool> SendMessageAsync(string senderId, MessageData<Transaction> message)
@@ -27,8 +27,8 @@ namespace ATM.MQ.Application.Services
 			if (message is null)
 				throw new InvalidMessageDataException("Message should not be null");
 
-			await Task.Factory.StartNew(() => MQProvider.PublishMessage(senderId, message));
-			await Repository.SaveMessageAsync(message);
+			await Task.Factory.StartNew(() => _mqProvider.PublishMessage(senderId, message));
+			await _repository.SaveMessageAsync(message);
 
 			return true;
 		}
@@ -38,12 +38,12 @@ namespace ATM.MQ.Application.Services
 			if (string.IsNullOrWhiteSpace(queueName))
 				throw new ArgumentNullException();
 
-			await Task.Factory.StartNew(() => MQProvider.SubscribeQueue(queueName));
+			await Task.Factory.StartNew(() => _mqProvider.SubscribeQueue(queueName));
 		}
 
 		public void Dispose()
 		{
-			this.MQProvider?.Close();
+			this._mqProvider?.Close();
 		}
 	}
 }

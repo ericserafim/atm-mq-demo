@@ -25,9 +25,9 @@ namespace ATM.MQ.RabbitMQ
 
         public RabbitMQProvider(IMQConnectionSettings connectionSettings)
         {
-            this._connectionSettings = connectionSettings;
+            _connectionSettings = connectionSettings;
 
-            this._connectionFactory = new ConnectionFactory()
+            _connectionFactory = new ConnectionFactory()
             {
                 HostName = connectionSettings.HostName,
                 Port = connectionSettings.Port,
@@ -39,28 +39,28 @@ namespace ATM.MQ.RabbitMQ
 
         public void Connect()
         {
-            if (this._connection != null)
+            if (_connection != null)
                 return;
 
-            this._connection = this._connectionFactory.CreateConnection();
-            this._channel = this._connection.CreateModel();
+            _connection = _connectionFactory.CreateConnection();
+            _channel = _connection.CreateModel();
         }
 
         public void PublishMessage(string senderId, MessageData<Transaction> message)
         {
-            var properties = this._channel.CreateBasicProperties();
+            var properties = _channel.CreateBasicProperties();
             properties.AppId = senderId;
             properties.MessageId = message.Id;
 
-            this._channel.BasicPublish(exchange: this._connectionSettings.Exchange,
-                                routingKey: this._connectionSettings.RountingKey,
-                                basicProperties: properties,
-                                body: Encoding.UTF8.GetBytes(message.ToJson()));
+            _channel.BasicPublish(exchange: _connectionSettings.Exchange,
+                                  routingKey: _connectionSettings.RountingKey,
+                                  basicProperties: properties,
+                                  body: Encoding.UTF8.GetBytes(message.ToJson()));
         }
 
         public void SubscribeQueue(string queueName)
         {
-            var consumer = new EventingBasicConsumer(this._channel);
+            var consumer = new EventingBasicConsumer(_channel);
 
             consumer.Received += (sender, ea) =>
             {
@@ -69,21 +69,21 @@ namespace ATM.MQ.RabbitMQ
 
                 this.OnReceivedMessage?.Invoke(sender, message);
 
-                this._channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
-            this._channel.BasicConsume(queue: queueName,
-                                 autoAck: false,
-                                 consumer: consumer);
+            _channel.BasicConsume(queue: queueName,
+                                  autoAck: false,
+                                  consumer: consumer);
         }
 
         public void Close()
         {
-            this._channel?.Close();
-            this._channel?.Dispose();
+            _channel?.Close();
+            _channel?.Dispose();
             
-            this._connection?.Close();
-            this._connection?.Dispose();
+            _connection?.Close();
+            _connection?.Dispose();
         }
     }
 }

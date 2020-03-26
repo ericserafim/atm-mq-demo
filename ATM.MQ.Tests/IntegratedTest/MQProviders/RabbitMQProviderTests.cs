@@ -22,14 +22,14 @@ namespace ATM.MQ.Tests.IntegratedTest.MQProviders
 
             var settings = config.GetSection(nameof(MQConnectionSettings)).Get<MQConnectionSettings>();
 
-            this._provider = new RabbitMQProvider(settings);
+            _provider = new RabbitMQProvider(settings);
         }
 
         [Fact]
         public void Connect_Should_Connect()
         {
             //Act
-            Action result = () => this._provider.Connect();
+            Action result = () => _provider.Connect();
 
             //Assert
             result.Should().NotThrow();
@@ -43,8 +43,8 @@ namespace ATM.MQ.Tests.IntegratedTest.MQProviders
             var message = fixture.Create<MessageData<Transaction>>();
 
             //Act
-            this._provider.Connect();
-            Action result = () => this._provider.PublishMessage(senderId: Guid.NewGuid().ToString(), message);
+            _provider.Connect();
+            Action result = () => _provider.PublishMessage(senderId: Guid.NewGuid().ToString(), message);
 
             //Assert
             result.Should().NotThrow();
@@ -54,8 +54,8 @@ namespace ATM.MQ.Tests.IntegratedTest.MQProviders
         public void SubscribeQueue_Should_SubscribeQueue()
         {
             //Act
-            this._provider.Connect();
-            Action result = () => this._provider.SubscribeQueue(queueName: "atm-messages");
+            _provider.Connect();
+            Action result = () => _provider.SubscribeQueue(queueName: "atm-messages");
 
             //Assert
             result.Should().NotThrow();
@@ -70,17 +70,17 @@ namespace ATM.MQ.Tests.IntegratedTest.MQProviders
             var messageSent = fixture.Create<MessageData<Transaction>>();
             MessageData<Transaction> messageReceived = null;
 
-            this._provider.Connect();
-            this._provider.SubscribeQueue(queueName: "atm-messages");
+            _provider.Connect();
+            _provider.SubscribeQueue(queueName: "atm-messages");
 
-            this._provider.OnReceivedMessage += (sender, msg) =>
+            _provider.OnReceivedMessage += (sender, msg) =>
             {
                 messageReceived = msg;
                 _autoResetEvent.Set();
             };
 
             //Act
-            this._provider.PublishMessage(senderId: Guid.NewGuid().ToString(), messageSent);
+            _provider.PublishMessage(senderId: Guid.NewGuid().ToString(), messageSent);
 
             //Assert
             _autoResetEvent.WaitOne(8000).Should().BeTrue();
