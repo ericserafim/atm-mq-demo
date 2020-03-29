@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ATM.MQ.Core.Interfaces.Services
 {
-	public interface IMessageService<T> : IDisposable where T : class
+	public interface IMessageService : IDisposable
 	{
 		Task<bool> SendMessageAsync(string senderId, MessageData<Transaction> message);
 

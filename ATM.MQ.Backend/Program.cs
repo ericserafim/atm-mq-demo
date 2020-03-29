@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using ATM.MQ.Application.Services;
-using ATM.MQ.Core.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ATM.MQ.Backend.Extensions;
+using ATM.MQ.Core.Interfaces.Services;
+using ATM.MQ.Core.Interfaces.Configuration;
 
 namespace ATM.MQ.Backend
 {
@@ -9,10 +9,14 @@ namespace ATM.MQ.Backend
     {
         static void Main(string[] args)
         {
-            var collection = new ServiceCollection();
-            collection.AddScoped<IMessageService, MessageService>();
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.RegisterServices();
             
-            var serviceProvider = collection.BuildServiceProvider();            
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var messageService = serviceProvider.GetService<IMessageService>();
+            var mqSettings = serviceProvider.GetService<IMQConnectionSettings>();
+
+            messageService.SubscribeQueueAsync(mqSettings.QueueName);                                
         }
     }
 }

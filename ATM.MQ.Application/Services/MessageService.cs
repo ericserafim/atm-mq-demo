@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace ATM.MQ.Application.Services
 {
-	public class MessageService : IMessageService<MessageData<Transaction>>
+	public class MessageService : IMessageService
 	{
 		private readonly IMQProvider _mqProvider;
 
-		private readonly IMessageRepository<MessageData<Transaction>> _repository;
+		private readonly IMessageRepository _repository;
 
-		public MessageService(IMQProviderFactory providerFactory, IMessageRepository<MessageData<Transaction>> repository)
+		public MessageService(IMQProviderFactory providerFactory, IMessageRepository repository)
 		{
 			_mqProvider = providerFactory.Create();
 			_repository = repository;
 
+			_mqProvider.OnReceivedMessage += () => {};
 			_mqProvider.Connect();
 		}
 

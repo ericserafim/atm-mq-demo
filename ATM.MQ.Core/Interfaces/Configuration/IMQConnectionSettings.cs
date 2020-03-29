@@ -15,5 +15,7 @@ namespace ATM.MQ.Core.Interfaces.Configuration
         string Exchange { get; set; }
 
         string RountingKey { get; set; }
+
+        string QueueName { get; set; }
     }
 }

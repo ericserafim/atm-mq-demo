@@ -1,10 +1,12 @@
-using System.Threading.Tasks;
+using System;
 using ATM.MQ.Core.Entities;
 
 namespace ATM.MQ.Core.Interfaces.MQ
 {
-	public interface IMQProvider
+    public interface IMQProvider
 	{
+		event EventHandler<MessageData<Transaction>> OnReceivedMessage;
+
 		void Connect();
 
 		void PublishMessage(string senderId, MessageData<Transaction> message);

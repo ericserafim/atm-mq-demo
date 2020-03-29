@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ATM.MQ.Repositories
 {
-    public class MongoDbMessageRepository : IMessageRepository<MessageData<Transaction>>
+    public class MongoDbMessageRepository : IMessageRepository
     {
         private readonly IMongoCollection<MessageData<Transaction>> _messages;
 

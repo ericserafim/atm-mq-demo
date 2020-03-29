@@ -22,7 +22,7 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			var message = fixture.Create<MessageData<Transaction>>();
 			var factoryMock = new Mock<IMQProviderFactory>();
 			var providerMock = new Mock<IMQProvider>();
-			var repoMock = new Mock<IMessageRepository<MessageData<Transaction>>>();
+			var repoMock = new Mock<IMessageRepository>();
 
 
 			providerMock.Setup(s => s.Connect()).Verifiable();
@@ -51,7 +51,7 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			MessageData<Transaction> message = null;
 			var factoryMock = new Mock<IMQProviderFactory>();
 			var providerMock = new Mock<IMQProvider>();
-			var repoMock = new Mock<IMessageRepository<MessageData<Transaction>>>();
+			var repoMock = new Mock<IMessageRepository>();
 			factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
 			var sut = new MessageService(factoryMock.Object, repoMock.Object);
 
@@ -68,7 +68,7 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			//Arrange                    
 			var factoryMock = new Mock<IMQProviderFactory>();
 			var providerMock = new Mock<IMQProvider>();
-			var repoMock = new Mock<IMessageRepository<MessageData<Transaction>>>();
+			var repoMock = new Mock<IMessageRepository>();
 			providerMock.Setup(s => s.Connect()).Verifiable();
 			providerMock.Setup(s => s.SubscribeQueue(It.IsAny<string>())).Verifiable();
 			factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
