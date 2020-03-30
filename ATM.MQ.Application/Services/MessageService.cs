@@ -14,24 +14,30 @@ namespace ATM.MQ.Application.Services
 
 		private readonly IMessageRepository _repository;
 
+
+
 		public MessageService(IMQProviderFactory providerFactory, IMessageRepository repository)
 		{
 			_mqProvider = providerFactory.Create();
 			_repository = repository;
 
-			_mqProvider.OnReceivedMessage += () => {};
+			_mqProvider.OnReceivedMessage += OnReceivedMessage;
+
 			_mqProvider.Connect();
 		}
 
-		public async Task<bool> SendMessageAsync(string senderId, MessageData<Transaction> message)
+        private void OnReceivedMessage(object sender, MessageData<Transaction> message)
+        {
+			System.Console.WriteLine($"Received message id: {message.Id}");
+            _repository.SaveMessageAsync(message).GetAwaiter().GetResult();
+        }
+
+        public async Task SendMessageAsync(string senderId, MessageData<Transaction> message)
 		{
 			if (message is null)
 				throw new InvalidMessageDataException("Message should not be null");
 
 			await Task.Factory.StartNew(() => _mqProvider.PublishMessage(senderId, message));
-			await _repository.SaveMessageAsync(message);
-
-			return true;
 		}
 
 		public async Task SubscribeQueueAsync(string queueName)

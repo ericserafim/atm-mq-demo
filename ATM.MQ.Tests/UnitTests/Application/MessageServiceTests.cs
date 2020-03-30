@@ -15,7 +15,7 @@ namespace ATM.MQ.Tests.UnitTests.Application
 	public class MessageServiceTests
 	{
 		[Fact]
-		public async Task SendMessage_Should_Send_Message()
+		public void SendMessage_Should_Send_Message()
 		{
 			//Arrange
 			var fixture = new Fixture();
@@ -35,13 +35,12 @@ namespace ATM.MQ.Tests.UnitTests.Application
 			var sut = new MessageService(factoryMock.Object, repoMock.Object);
 
 			//Action
-			var result = await sut.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
+			Func<Task> result = async () => await sut.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
 
 			//Assert    
-			result.Should().BeTrue();
+			result.Should().NotThrow();
 			providerMock.Verify(s => s.Connect(), Times.Once);
-			providerMock.Verify(s => s.PublishMessage(It.IsAny<string>(), message), Times.Once);
-			repoMock.Verify(x => x.SaveMessageAsync(It.IsAny<MessageData<Transaction>>()), Times.Once);
+			providerMock.Verify(s => s.PublishMessage(It.IsAny<string>(), message), Times.Once);			
 		}
 
 		[Fact]

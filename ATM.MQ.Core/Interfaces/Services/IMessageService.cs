@@ -6,7 +6,7 @@ namespace ATM.MQ.Core.Interfaces.Services
 {
 	public interface IMessageService : IDisposable
 	{
-		Task<bool> SendMessageAsync(string senderId, MessageData<Transaction> message);
+		Task SendMessageAsync(string senderId, MessageData<Transaction> message);
 
 		Task SubscribeQueueAsync(string queueName);
 	}

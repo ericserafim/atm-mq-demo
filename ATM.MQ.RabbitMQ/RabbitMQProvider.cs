@@ -18,7 +18,7 @@ namespace ATM.MQ.RabbitMQ
         private readonly ConnectionFactory _connectionFactory;
 
         private IConnection _connection;
-        
+
         private IModel _channel;
 
         public event EventHandler<MessageData<Transaction>> OnReceivedMessage;
@@ -67,9 +67,11 @@ namespace ATM.MQ.RabbitMQ
                 var messageJson = Encoding.UTF8.GetString(ea.Body);
                 var message = messageJson.ToObject<MessageData<Transaction>>();
 
-                this.OnReceivedMessage?.Invoke(sender, message);
+                if (OnReceivedMessage != null)
+                    this.OnReceivedMessage(sender, message);
 
                 _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                System.Console.WriteLine($"ACK {message.Id}");
             };
 
             _channel.BasicConsume(queue: queueName,
@@ -81,7 +83,7 @@ namespace ATM.MQ.RabbitMQ
         {
             _channel?.Close();
             _channel?.Dispose();
-            
+
             _connection?.Close();
             _connection?.Dispose();
         }

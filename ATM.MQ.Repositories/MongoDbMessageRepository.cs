@@ -32,9 +32,9 @@ namespace ATM.MQ.Repositories
         }
 
         public async Task<bool> SaveMessageAsync(MessageData<Transaction> message)
-        {
-            message.Id = Guid.NewGuid().ToString();
+        {                    
             await _messages.InsertOneAsync(message);
+            System.Console.WriteLine($"SaveMessage {message.Id}");
             return true;
         }
     }
