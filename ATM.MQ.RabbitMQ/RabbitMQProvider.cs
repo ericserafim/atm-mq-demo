@@ -68,8 +68,7 @@ namespace ATM.MQ.RabbitMQ
         if (OnReceivedMessage != null)
           this.OnReceivedMessage(sender, message);
 
-        _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
-        System.Console.WriteLine($"ACK {message.Id}");
+        _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);        
       };
 
       _channel.BasicConsume(queue: queueName,
