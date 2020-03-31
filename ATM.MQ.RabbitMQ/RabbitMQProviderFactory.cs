@@ -3,15 +3,15 @@ using ATM.MQ.Core.Interfaces.MQ;
 
 namespace ATM.MQ.RabbitMQ
 {
-    public class RabbitMQProviderFactory : IMQProviderFactory
+  public class RabbitMQProviderFactory : IMQProviderFactory
+  {
+    private readonly IMQConnectionSettings _connectionSettings;
+
+    public RabbitMQProviderFactory(IMQConnectionSettings connectionSettings)
     {
-        private readonly IMQConnectionSettings _connectionSettings;
-
-        public RabbitMQProviderFactory(IMQConnectionSettings connectionSettings)
-        {
-            _connectionSettings = connectionSettings;
-        }
-
-        public IMQProvider Create() => new RabbitMQProvider(_connectionSettings);
+      _connectionSettings = connectionSettings;
     }
+
+    public IMQProvider Create() => new RabbitMQProvider(_connectionSettings);
+  }
 }

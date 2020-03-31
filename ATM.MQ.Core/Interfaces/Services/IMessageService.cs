@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace ATM.MQ.Core.Interfaces.Services
 {
-	public interface IMessageService : IDisposable
-	{
-		Task SendMessageAsync(string senderId, MessageData<Transaction> message);
+  public interface IMessageService : IDisposable
+  {
+    Task SendMessageAsync(string senderId, MessageData<Transaction> message);
 
-		Task SubscribeQueueAsync(string queueName);
-	}
+    Task SubscribeQueueAsync(string queueName);
+  }
 }

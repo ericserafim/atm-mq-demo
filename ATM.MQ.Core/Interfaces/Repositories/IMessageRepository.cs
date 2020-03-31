@@ -1,14 +1,14 @@
-using System.Threading.Tasks;
 using ATM.MQ.Core.Entities;
+using System.Threading.Tasks;
 
 namespace ATM.MQ.Core.Interfaces.Repositories
 {
-	public interface IMessageRepository
-	{
-		Task<MessageData<Transaction>> GetMessageAsync(string Id);
+  public interface IMessageRepository
+  {
+    Task<MessageData<Transaction>> GetMessageAsync(string Id);
 
-		Task<bool> SaveMessageAsync(MessageData<Transaction> message);
+    Task<bool> SaveMessageAsync(MessageData<Transaction> message);
 
-		Task<bool> DeleteMessageAsync(string Id);
-    }
+    Task<bool> DeleteMessageAsync(string Id);
+  }
 }
