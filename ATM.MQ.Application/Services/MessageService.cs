@@ -12,22 +12,20 @@ namespace ATM.MQ.Application.Services
 	{
 		private readonly IMQProvider _mqProvider;
 
-		private readonly IMessageRepository _repository;
+		private readonly IContextRepository _contextRepository;
 
 
-		public MessageService(IMQProviderFactory providerFactory, IMessageRepository repository)
+		public MessageService(IMQProviderFactory providerFactory, IContextRepository contextRepository)
 		{
 			_mqProvider = providerFactory.Create();
-			_repository = repository;
-
+			_contextRepository = contextRepository;
 			_mqProvider.OnReceivedMessage += OnReceivedMessage;
-
 			_mqProvider.Connect();
 		}
 
 		private void OnReceivedMessage(object sender, MessageData<Transaction> message)
 		{
-			_repository.SaveMessageAsync(message).GetAwaiter().GetResult();
+			_contextRepository.Messages.Insert(message);
 		}
 
 		public async Task SendMessageAsync(string senderId, MessageData<Transaction> message)

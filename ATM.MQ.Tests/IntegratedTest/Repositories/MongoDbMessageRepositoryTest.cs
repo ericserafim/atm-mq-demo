@@ -10,7 +10,7 @@ namespace ATM.MQ.Tests.IntegratedTest.Repositories
 {
   public class MongoDbMessageRepositoryTest
   {
-    private readonly MongoDbMessageRepository _repository;
+    private readonly MongoDbGenericRepository _repository;
 
     public MongoDbMessageRepositoryTest()
     {
@@ -20,7 +20,7 @@ namespace ATM.MQ.Tests.IntegratedTest.Repositories
 
       var settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
 
-      _repository = new MongoDbMessageRepository(settings);
+      _repository = new MongoDbGenericRepository(settings);
     }
 
     [Fact]

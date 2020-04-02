@@ -21,7 +21,7 @@ namespace ATM.MQ.Backend.Extensions
 
       serviceCollection.AddScoped<IMQProviderFactory, RabbitMQProviderFactory>();
       serviceCollection.AddScoped<IMQProvider, RabbitMQProvider>();
-      serviceCollection.AddScoped<IMessageRepository, MongoDbMessageRepository>();
+      serviceCollection.AddScoped<IMessageRepository, MongoDbGenericRepository>();
       serviceCollection.AddScoped<IMessageService, MessageService>();
 
       serviceCollection.Configure<DatabaseSettings>(configuration.GetSection(nameof(DatabaseSettings)));
