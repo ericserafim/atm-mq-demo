@@ -12,93 +12,79 @@ using Xunit;
 
 namespace ATM.MQ.Tests.UnitTests.Application
 {
-  public class MessageServiceTests
-  {
-    [Fact]
-    public void SendMessage_Should_Send_Message()
-    {
-      //Arrange
-      var fixture = new Fixture();
-      var message = fixture.Create<MessageData<Transaction>>();
-      var factoryMock = new Mock<IMQProviderFactory>();
-      var providerMock = new Mock<IMQProvider>();
-      var repoMock = new Mock<IMessageRepository>();
+	public class MessageServiceTests
+	{
+		private readonly MessageService _messageService;
 
+		private readonly Mock<IMQProvider> _providerMock;
 
-      providerMock.Setup(s => s.Connect()).Verifiable();
-      providerMock.Setup(s => s.PublishMessage(It.IsAny<string>(), message)).Verifiable();
-      factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
+		public MessageServiceTests()
+		{
+			var factoryMock = new Mock<IMQProviderFactory>();
+			_providerMock = new Mock<IMQProvider>();
+			var dbContextMock = new Mock<IContextRepository>();
 
-      repoMock.Setup(s => s.SaveMessageAsync(It.IsAny<MessageData<Transaction>>()))
-      .Returns(Task.FromResult(true));
+			_providerMock.Setup(s => s.Connect()).Verifiable();
+			_providerMock.Setup(s => s.PublishMessage(It.IsAny<string>(), It.IsAny<MessageData<Transaction>>())).Verifiable();
+			_providerMock.Setup(s => s.SubscribeQueue(It.IsAny<string>())).Verifiable();
+			factoryMock.Setup(s => s.Create()).Returns(_providerMock.Object);
+			dbContextMock.SetupAllProperties();
 
-      var sut = new MessageService(factoryMock.Object, repoMock.Object);
+			_messageService = new MessageService(factoryMock.Object, dbContextMock.Object);
+		}
 
-      //Action
-      Func<Task> result = async () => await sut.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
+		[Fact]
+		public void SendMessage_Should_Send_Message()
+		{
+			//Arrange
+			var fixture = new Fixture();
+			var message = fixture.Create<MessageData<Transaction>>();
 
-      //Assert    
-      result.Should().NotThrow();
-      providerMock.Verify(s => s.Connect(), Times.Once);
-      providerMock.Verify(s => s.PublishMessage(It.IsAny<string>(), message), Times.Once);
-    }
+			//Action
+			Func<Task> result = async () => await _messageService.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
 
-    [Fact]
-    public void SendMessage_Should_ThrowException_When_MessageIsNull()
-    {
-      //Arrange            
-      MessageData<Transaction> message = null;
-      var factoryMock = new Mock<IMQProviderFactory>();
-      var providerMock = new Mock<IMQProvider>();
-      var repoMock = new Mock<IMessageRepository>();
-      factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
-      var sut = new MessageService(factoryMock.Object, repoMock.Object);
+			//Assert    
+			result.Should().NotThrow();
+			_providerMock.Verify(s => s.Connect(), Times.Once);
+			_providerMock.Verify(s => s.PublishMessage(It.IsAny<string>(), message), Times.Once);
+		}
 
-      //Action
-      Func<Task> result = async () => await sut.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
+		[Fact]
+		public void SendMessage_Should_ThrowException_When_MessageIsNull()
+		{
+			//Arrange            
+			MessageData<Transaction> message = null;
 
-      //Assert    
-      result.Should().Throw<InvalidMessageDataException>();
-    }
+			//Action
+			Func<Task> result = async () => await _messageService.SendMessageAsync(senderId: Guid.NewGuid().ToString(), message);
 
-    [Fact]
-    public void SubscribeQueue_Should_Subscribe()
-    {
-      //Arrange                    
-      var factoryMock = new Mock<IMQProviderFactory>();
-      var providerMock = new Mock<IMQProvider>();
-      var repoMock = new Mock<IMessageRepository>();
-      providerMock.Setup(s => s.Connect()).Verifiable();
-      providerMock.Setup(s => s.SubscribeQueue(It.IsAny<string>())).Verifiable();
-      factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
-      var sut = new MessageService(factoryMock.Object, repoMock.Object);
+			//Assert    
+			result.Should().Throw<InvalidMessageDataException>();
+		}
 
-      //Action
-      Func<Task> result = async () => await sut.SubscribeQueueAsync(queueName: "name");
+		[Fact]
+		public void SubscribeQueue_Should_Subscribe()
+		{
+			//Action
+			Func<Task> result = async () => await _messageService.SubscribeQueueAsync(queueName: "name");
 
-      //Assert    
-      result.Should().NotThrow();
-      providerMock.Verify(s => s.Connect(), Times.Once);
-      providerMock.Verify(s => s.SubscribeQueue(It.IsAny<string>()), Times.Once);
-    }
+			//Assert    
+			result.Should().NotThrow();
+			_providerMock.Verify(s => s.Connect(), Times.Once);
+			_providerMock.Verify(s => s.SubscribeQueue(It.IsAny<string>()), Times.Once);
+		}
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    public void SubscribeQueue_Should_ThrowException_When_QueueNameIsNullOrEmptyOrWhiteSpace(string queueName)
-    {
-      //Arrange                    
-      var providerMock = new Mock<IMQProvider>();
-      var factoryMock = new Mock<IMQProviderFactory>();
-      factoryMock.Setup(s => s.Create()).Returns(providerMock.Object);
-      var sut = new MessageService(factoryMock.Object, default);
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData(" ")]
+		public void SubscribeQueue_Should_ThrowException_When_QueueNameIsNullOrEmptyOrWhiteSpace(string queueName)
+		{			
+			//Action
+			Func<Task> result = async () => await _messageService.SubscribeQueueAsync(queueName);
 
-      //Action
-      Func<Task> result = async () => await sut.SubscribeQueueAsync(queueName);
-
-      //Assert    
-      result.Should().Throw<ArgumentNullException>();
-    }
-  }
+			//Assert    
+			result.Should().Throw<ArgumentNullException>();
+		}
+	}
 }

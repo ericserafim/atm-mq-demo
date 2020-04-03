@@ -13,28 +13,28 @@ using System.IO;
 
 namespace ATM.MQ.Backend.Extensions
 {
-  public static class ServiceProviderExtensions
-  {
-    public static void RegisterServices(this ServiceCollection serviceCollection)
-    {
-      var configuration = GetConfiguration();
+	public static class ServiceProviderExtensions
+	{
+		public static void RegisterServices(this ServiceCollection serviceCollection)
+		{
+			var configuration = GetConfiguration();
 
-      serviceCollection.AddScoped<IMQProviderFactory, RabbitMQProviderFactory>();
-      serviceCollection.AddScoped<IMQProvider, RabbitMQProvider>();
-      serviceCollection.AddScoped<IMessageRepository, MongoDbGenericRepository>();
-      serviceCollection.AddScoped<IMessageService, MessageService>();
+			serviceCollection.AddScoped<IMQProviderFactory, RabbitMQProviderFactory>();
+			serviceCollection.AddScoped<IMQProvider, RabbitMQProvider>();
+			serviceCollection.AddScoped<IContextRepository, MongoDbContext>();
+			serviceCollection.AddScoped<IMessageService, MessageService>();			
 
-      serviceCollection.Configure<DatabaseSettings>(configuration.GetSection(nameof(DatabaseSettings)));
-      serviceCollection.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+			serviceCollection.Configure<DatabaseSettings>(configuration.GetSection(nameof(DatabaseSettings)));
+			serviceCollection.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
-      serviceCollection.Configure<MQConnectionSettings>(configuration.GetSection(nameof(MQConnectionSettings)));
-      serviceCollection.AddSingleton<IMQConnectionSettings>(sp => sp.GetRequiredService<IOptions<MQConnectionSettings>>().Value);
-    }
+			serviceCollection.Configure<MQConnectionSettings>(configuration.GetSection(nameof(MQConnectionSettings)));
+			serviceCollection.AddSingleton<IMQConnectionSettings>(sp => sp.GetRequiredService<IOptions<MQConnectionSettings>>().Value);
+		}
 
-    private static IConfiguration GetConfiguration() =>
-        new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .Build();
-  }
+		private static IConfiguration GetConfiguration() =>
+				new ConfigurationBuilder()
+						.SetBasePath(Directory.GetCurrentDirectory())
+						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+						.Build();
+	}
 }

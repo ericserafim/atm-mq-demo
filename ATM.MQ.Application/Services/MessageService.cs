@@ -25,7 +25,7 @@ namespace ATM.MQ.Application.Services
 
 		private void OnReceivedMessage(object sender, MessageData<Transaction> message)
 		{
-			_contextRepository.Messages.Insert(message);
+			_contextRepository.Messages.InsertAsync(message);
 		}
 
 		public async Task SendMessageAsync(string senderId, MessageData<Transaction> message)

@@ -1,7 +1,7 @@
 namespace ATM.MQ.Core.Interfaces.MQ
 {
-  public interface IMQProviderFactory
-  {
-    IMQProvider Create();
-  }
+	public interface IMQProviderFactory
+	{
+		IMQProvider Create();
+	}
 }

@@ -1,15 +1,15 @@
-using System;
+using System.Threading.Tasks;
 
 namespace ATM.MQ.Core.Interfaces.Repositories
 {
-    public interface IGenericRepository<TEntity> where TEntity : class
-    {
-        TEntity Get(object id);
+	public interface IGenericRepository<TEntity> where TEntity : class
+	{
+		Task<TEntity> GetAsync(object id);
 
-        void Insert(TEntity entity);
+		Task InsertAsync(TEntity entity);
 
-        void Update(TEntity entity);
+		Task UpdateAsync(TEntity entity);
 
-        void Delete(object id);
-    }
+		Task DeleteAsync(object id);
+	}
 }

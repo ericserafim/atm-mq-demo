@@ -1,68 +1,70 @@
 ﻿using ATM.MQ.Core.Entities;
+using ATM.MQ.Core.Interfaces.Repositories;
 using ATM.MQ.Repositories;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace ATM.MQ.Tests.IntegratedTest.Repositories
 {
-  public class MongoDbMessageRepositoryTest
-  {
-    private readonly MongoDbGenericRepository _repository;
+	public class MongoDbMessageRepositoryTest
+	{
+		private readonly IContextRepository _dbContext;
 
-    public MongoDbMessageRepositoryTest()
-    {
-      var config = new ConfigurationBuilder()
-      .AddJsonFile("appsettings.json", optional: false)
-      .Build();
+		public MongoDbMessageRepositoryTest()
+		{
+			var config = new ConfigurationBuilder()
+			.AddJsonFile("appsettings.json", optional: false)
+			.Build();
 
-      var settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
+			var settings = config.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
 
-      _repository = new MongoDbGenericRepository(settings);
-    }
+			_dbContext = new MongoDbContext(settings);
+		}
 
-    [Fact]
-    public async Task SaveMessageAsync_Should_InsertOneMessage()
-    {
-      //Arrange
-      var fixture = new Fixture();
-      var message = fixture.Create<MessageData<Transaction>>();
+		[Fact]
+		public void Should_InsertOneMessage()
+		{
+			//Arrange
+			var fixture = new Fixture();
+			var message = fixture.Create<MessageData<Transaction>>();
 
-      //Act
-      var result = await _repository.SaveMessageAsync(message);
+			//Act
+			Func<Task> result = async () => await _dbContext.Messages.InsertAsync(message);
 
-      //Assert
-      result.Should().BeTrue();
-    }
+			//Assert
+			result.Should().NotThrow();
+		}
 
 
-    [Theory]
-    [InlineData("Id7ec3c4c4-fdc6-4b63-9ead-4d6d8e1ed55b")]
-    [InlineData("Id458cfa52-110d-489a-8c87-badf4592c3a0")]
-    public async Task GetMessageAsync_Should_GetMessage(string messageId)
-    {
-      //Act
-      var result = await _repository.GetMessageAsync(messageId);
+		[Theory]
+		[InlineData("Idaa212308-bef2-4b30-a196-f3d071a56526")]
+		[InlineData("Id356ff97e-14b2-4537-b875-af1df382c6f0")]
+		public async Task Should_GetMessage(string messageId)
+		{
+			//Act
+			var result = await _dbContext.Messages.GetAsync(messageId);
 
-      //Assert
-      result.Id.Should().Be(messageId);
-    }
+			//Assert
+			result.Id.Should().Be(messageId);
+		}
 
-    [Fact]
-    public async Task DeleteMessageAsync_Should_DeleteOneMessage()
-    {
-      //Arrange
-      var fixture = new Fixture();
-      var message = fixture.Create<MessageData<Transaction>>();
-      _ = await _repository.SaveMessageAsync(message);
+		[Fact]
+		public async Task DeleteMessageAsync_Should_DeleteOneMessage()
+		{
+			//Arrange
+			var fixture = new Fixture();
+			var message = fixture.Create<MessageData<Transaction>>();
+			await _dbContext.Messages.InsertAsync(message);
 
-      //Act
-      var result = await _repository.DeleteMessageAsync(message.Id);
+			//Act
+			Func<Task> result = async () => await _dbContext.Messages.DeleteAsync(message.Id);
 
-      //Assert
-      result.Should().BeTrue();
-    }
-  }
+			//Assert
+			result.Should().NotThrow();
+		}
+	}
 }
