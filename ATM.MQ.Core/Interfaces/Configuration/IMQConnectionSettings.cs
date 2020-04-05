@@ -11,11 +11,5 @@ namespace ATM.MQ.Core.Interfaces.Configuration
 		string Password { get; set; }
 
 		string VirtualHost { get; set; }
-
-		string Exchange { get; set; }
-
-		string RountingKey { get; set; }
-
-		string QueueName { get; set; }
-	}
+  }
 }

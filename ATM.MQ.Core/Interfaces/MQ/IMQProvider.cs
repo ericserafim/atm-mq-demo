@@ -1,18 +1,17 @@
-using ATM.MQ.Core.Entities;
 using System;
 
 namespace ATM.MQ.Core.Interfaces.MQ
 {
-	public interface IMQProvider
+  public interface IMQProvider<T>
 	{
-		event EventHandler<MessageData<Transaction>> OnReceivedMessage;
+		event EventHandler<T> OnReceivedMessage;
 
 		void Connect();
 
-		void PublishMessage(string senderId, MessageData<Transaction> message);
+		void PublishMessage(string exchange, string routingKey, string senderId, object message);
 
 		void SubscribeQueue(string queueName);
 
-		void Close();
-	}
+		void Close();    
+  }
 }

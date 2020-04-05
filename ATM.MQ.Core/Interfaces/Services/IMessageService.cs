@@ -8,6 +8,6 @@ namespace ATM.MQ.Core.Interfaces.Services
 	{
 		Task SendMessageAsync(string senderId, MessageData<Transaction> message);
 
-		Task SubscribeQueueAsync(string queueName);
+		Task SubscribeQueueAsync();
 	}
 }

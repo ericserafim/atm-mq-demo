@@ -13,11 +13,5 @@ namespace ATM.MQ.Core.Entities
 		public string Password { get; set; }
 
 		public string VirtualHost { get; set; }
-
-		public string Exchange { get; set; }
-
-		public string RountingKey { get; set; }
-
-		public string QueueName { get; set; }
 	}
 }

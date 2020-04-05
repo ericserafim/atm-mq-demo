@@ -14,6 +14,7 @@ namespace ATM.MQ.Repositories
     private MongoDbGenericRepository<Owner> _owners;
 
     private MongoDbGenericRepository<MessageData<Transaction>> _messages;
+    
     private MongoDbGenericRepository<Account> _accounts;
 
     public MongoDbContext(IDatabaseSettings settings)

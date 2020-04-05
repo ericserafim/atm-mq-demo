@@ -24,6 +24,7 @@
     <ProjectReference Include="..\ATM.MQ.Core\ATM.MQ.Core.csproj" />
     <ProjectReference Include="..\ATM.MQ.Repositories\ATM.MQ.Repositories.csproj" />
     <ProjectReference Include="..\ATM.MQ.RabbitMQ\ATM.MQ.RabbitMQ.csproj" />
+    <ProjectReference Include="..\ATM.MQ.Extensions\ATM.MQ.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

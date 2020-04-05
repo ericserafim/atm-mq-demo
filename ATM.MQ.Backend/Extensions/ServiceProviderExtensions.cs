@@ -18,9 +18,8 @@ namespace ATM.MQ.Backend.Extensions
 		public static void RegisterServices(this ServiceCollection serviceCollection)
 		{
 			var configuration = GetConfiguration();
-
-			serviceCollection.AddScoped<IMQProviderFactory, RabbitMQProviderFactory>();
-			serviceCollection.AddScoped<IMQProvider, RabbitMQProvider>();
+			
+			serviceCollection.AddScoped<IMQProvider<MessageData<Transaction>>, RabbitMQProvider<MessageData<Transaction>>>();
 			serviceCollection.AddScoped<IContextRepository, MongoDbContext>();
 			serviceCollection.AddScoped<IMessageService, MessageService>();			
 
@@ -29,6 +28,9 @@ namespace ATM.MQ.Backend.Extensions
 
 			serviceCollection.Configure<MQConnectionSettings>(configuration.GetSection(nameof(MQConnectionSettings)));
 			serviceCollection.AddSingleton<IMQConnectionSettings>(sp => sp.GetRequiredService<IOptions<MQConnectionSettings>>().Value);
+
+			serviceCollection.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
+			serviceCollection.AddSingleton<IAppSettings>(sp => sp.GetRequiredService<IOptions<AppSettings>>().Value);
 		}
 
 		private static IConfiguration GetConfiguration() =>
