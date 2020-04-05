@@ -75,7 +75,6 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Authors
 
 * **Eric Serafim** - *Initial work* - [EricSerafim](https://github.com/ericserafim)
-* **Julio Cimador** - *Initial work* - [JulioCimador](https://github.com/juliocimador)
 
 ## License
 
