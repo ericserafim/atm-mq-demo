@@ -1,0 +1,92 @@
+﻿@page "/transaction"
+
+@using Entities = ATM.MQ.Core.Entities
+@using ATM.MQ.Core.Interfaces.Services
+
+@inject IMessageService MessageService
+
+<h3>@Title</h3>
+
+@if (_isMessageSentSuccessfully)
+{
+    <div class="alert @(_isMessageSentSuccessfully ? "alert-success" : "alert-danger")" role="alert">
+        @_infoText
+    </div>
+}
+
+
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="operation">Operation</label>
+            <select class="form-control" id="operation" @bind="_operation">
+                @foreach (var operation in GetOperations())
+                {
+                    <option value="@operation">@operation.ToString()</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="text" class="form-control" id="amount" @bind="_amount">
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="DoTransaction">Execute</button>
+    </form>
+</div>
+
+@code {
+    public string Title { get; set; }
+
+    private string _terminalId = Guid.NewGuid().ToString();
+    private Entities.Operation _operation;
+    private double _amount;
+    private bool _isMessageSentSuccessfully = false;
+    private string _infoText;
+    private bool _isDisplayInfo = false;
+
+
+    private IList<Entities.Operation> GetOperations()
+    {
+        return Enum.GetValues(typeof(Entities.Operation))
+        .Cast<Entities.Operation>()
+        .ToList();
+    }
+
+    public async Task DoTransaction()
+    {
+        var message = new Entities.MessageData<Entities.Transaction>
+        {
+            CreatedAt = DateTimeOffset.UtcNow,
+            CreatedBy = "User name",
+            Body = new Entities.Transaction
+            {
+                Account = new Entities.Account
+                {
+                    Id = "",
+                    Owner = new Entities.Owner
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        FirtName = "Fake",
+                        LastName = "Fake"
+                    }
+                },
+                Amount = _amount,
+                Operation = _operation
+            }
+        };
+
+        try
+        {
+            await MessageService.SendMessageAsync(senderId: _terminalId, message);
+            _isMessageSentSuccessfully = true;
+        }
+        catch (Exception)
+        {
+            _isMessageSentSuccessfully = false;
+        }
+        finally
+        {
+            _isDisplayInfo = true;
+        }
+    }
+}
