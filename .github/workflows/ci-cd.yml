@@ -22,6 +22,6 @@ jobs:
     - name: Test
       run: dotnet test --filter MessageServiceTests --no-restore --verbosity normal    
     - name: Backend Artifactory Generate
-      run: dotnet publish ${{ github.repository }}/ATM.MQ.Backend/ATM.MQ.Backend.csproj --output ./ATM.MQ.BackendPublish --configuration Release --no-build      
+      run: dotnet publish ./ATM.MQ.Backend/ATM.MQ.Backend.csproj --output ./ATM.MQ.BackendPublish --configuration Release --no-build      
     - name: Terminal Artifactory Generate
-      run: dotnet publish ${{ github.repository }}/ATM.MQ.Terminal/ATM.MQ.Terminal.csproj --output ./ATM.MQ.TerminalPublish --configuration Release --no-build        
+      run: dotnet publish ./ATM.MQ.Terminal/ATM.MQ.Terminal.csproj --output ./ATM.MQ.TerminalPublish --configuration Release --no-build        
