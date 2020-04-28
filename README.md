@@ -1,4 +1,11 @@
-![ATM MQ Demo](https://github.com/ericserafim/atm-mq-demo/workflows/ATM%20MQ%20Demo/badge.svg)
+Current Build: ![ATM MQ Demo](https://github.com/ericserafim/atm-mq-demo/workflows/ATM%20MQ%20Demo/badge.svg)
+
+## Built With
+
+* [![](https://img.shields.io/badge/.Net%20Core-3.1-blue)](https://github.com/dotnet/core) - Open-source cross-platform framework 
+* [![](https://img.shields.io/badge/RabbitMQ-5.1.2-orange)](https://www.rabbitmq.com) - Open-source message broker
+* [![](https://img.shields.io/badge/MongoDB-latest-green)](https://rometools.github.io/rome/) - Open-source cross-platform NoSQL database
+* [![](https://img.shields.io/badge/Blazor-latest-purple)](https://www.rabbitmq.com) - Open-source web framework
 
 # ATM Message Queue Demo
 
@@ -59,12 +66,6 @@ Give an example
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [.Net Core](https://github.com/dotnet/core) - Open-source cross-platform framework
-* [RabbitMQ](https://www.rabbitmq.com) - Open-source message broker
-* [MongoDB](https://rometools.github.io/rome/) - Open-source cross-platform NoSQL database
 
 ## Contributing
 
