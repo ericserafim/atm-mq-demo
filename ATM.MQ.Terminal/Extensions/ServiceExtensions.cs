@@ -6,7 +6,6 @@ using ATM.MQ.Core.Interfaces.Repositories;
 using ATM.MQ.Core.Interfaces.Services;
 using ATM.MQ.RabbitMQ;
 using ATM.MQ.Repositories;
-using ATM.MQ.Terminal.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
