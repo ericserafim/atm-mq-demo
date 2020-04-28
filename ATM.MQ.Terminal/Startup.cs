@@ -21,7 +21,7 @@ namespace ATM.MQ.Terminal
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddRazorPages();
-			services.AddServerSideBlazor();
+			services.AddServerSideBlazor();			
 			services.RegisterServices();
 		}
 

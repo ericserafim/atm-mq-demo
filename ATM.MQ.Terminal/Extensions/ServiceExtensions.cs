@@ -6,6 +6,7 @@ using ATM.MQ.Core.Interfaces.Repositories;
 using ATM.MQ.Core.Interfaces.Services;
 using ATM.MQ.RabbitMQ;
 using ATM.MQ.Repositories;
+using ATM.MQ.Terminal.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -31,6 +32,7 @@ namespace ATM.MQ.Terminal.Extensions
 
 			serviceCollection.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
 			serviceCollection.AddSingleton<IAppSettings>(sp => sp.GetRequiredService<IOptions<AppSettings>>().Value);
+			serviceCollection.AddScoped<UserDataService>();
 		}
 
 		private static IConfiguration GetConfiguration() =>

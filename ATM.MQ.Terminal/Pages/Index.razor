@@ -1,19 +1,21 @@
 ﻿@page "/"
 
-<div class="container">
-<center><img src="assets/logo.png"></center>
+@inject NavigationManager NavigationManager
 
-<form>
-  <div class="form-group">
-    <label for="accountInput">Account Number</label>
-    <input type="number" class="form-control" id="accountInput" aria-describedby="emailHelp" @bind="accountNumber">    
-  </div>
-  <div class="form-group">
-    <label for="PINInput">PIN</label>
-    <input type="password" class="form-control" id="PINInput" @bind="pin">
-  </div>
-  <button type="submit" class="btn btn-primary" @onclick="DoLogin">Login</button>
-</form>
+<div class="container">
+    <center><img src="assets/logo.png"></center>
+
+    <form>
+        <div class="form-group">
+            <label for="accountInput">Account Number</label>
+            <input type="number" class="form-control" id="accountInput" aria-describedby="emailHelp" @bind="accountNumber">
+        </div>
+        <div class="form-group">
+            <label for="PINInput">PIN</label>
+            <input type="password" class="form-control" id="PINInput" @bind="pin">
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="DoLogin">Login</button>
+    </form>
 </div>
 
 @code {
@@ -21,7 +23,7 @@
   private string pin;
 
   private void DoLogin()
-  {
-      Console.WriteLine($"{accountNumber} - {pin}");
+  {      
+      NavigationManager.NavigateTo($"/transaction/{accountNumber}");
   }
 }
