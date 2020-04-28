@@ -1,4 +1,5 @@
-Current Build: ![ATM MQ Demo](https://github.com/ericserafim/atm-mq-demo/workflows/ATM%20MQ%20Demo/badge.svg)
+## Current Build 
+![ATM MQ Demo](https://github.com/ericserafim/atm-mq-demo/workflows/ATM%20MQ%20Demo/badge.svg)
 
 ## Built With
 
