@@ -22,6 +22,16 @@ jobs:
     - name: Test
       run: dotnet test --filter MessageServiceTests --no-restore --verbosity normal    
     - name: Backend Artifactory Generate
-      run: dotnet publish ./ATM.MQ.Backend/ATM.MQ.Backend.csproj --output ./ATM.MQ.BackendPublish --configuration Release --no-build      
+      run: dotnet publish ./ATM.MQ.Backend/ATM.MQ.Backend.csproj --output ./ATM.MQ.BackendPublish --configuration Release --no-build        
     - name: Terminal Artifactory Generate
-      run: dotnet publish ./ATM.MQ.Terminal/ATM.MQ.Terminal.csproj --output ./ATM.MQ.TerminalPublish --configuration Release --no-build        
+      run: dotnet publish ./ATM.MQ.Terminal/ATM.MQ.Terminal.csproj --output ./ATM.MQ.TerminalPublish --configuration Release --no-build
+    - name: Upload Backend Artifacts
+      uses: actions/upload-artifact@v2      
+      with: 
+        name: ATM.MQ.BackendPublish
+        path: ./ATM.MQ.BackendPublish                               
+    - name: Upload Terminal Artifacts
+      uses: actions/upload-artifact@v2      
+      with: 
+        name: ATM.MQ.TerminalPublish
+        path: ./ATM.MQ.TerminalPublish                               
