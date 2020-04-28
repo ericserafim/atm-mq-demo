@@ -8,9 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -22,4 +20,8 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --filter MessageServiceTests --no-restore --verbosity normal
+      run: dotnet test --filter MessageServiceTests --no-restore --verbosity normal    
+    - name: Backend Artifactory Generate
+      run: dotnet publish ${{ GITHUB_REPOSITORY }}/ATM.MQ.Backend/ATM.MQ.Backend.csproj --output ./ATM.MQ.BackendPublish --configuration Release --no-build      
+    - name: Terminal Artifactory Generate
+      run: dotnet publish ${{ GITHUB_REPOSITORY }}/ATM.MQ.Terminal/ATM.MQ.Terminal.csproj --output ./ATM.MQ.TerminalPublish --configuration Release --no-build        
