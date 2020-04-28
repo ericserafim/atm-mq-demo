@@ -30,8 +30,7 @@ namespace ATM.MQ.Terminal.Extensions
 			serviceCollection.AddSingleton<IMQConnectionSettings>(sp => sp.GetRequiredService<IOptions<MQConnectionSettings>>().Value);
 
 			serviceCollection.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
-			serviceCollection.AddSingleton<IAppSettings>(sp => sp.GetRequiredService<IOptions<AppSettings>>().Value);
-			serviceCollection.AddScoped<UserDataService>();
+			serviceCollection.AddSingleton<IAppSettings>(sp => sp.GetRequiredService<IOptions<AppSettings>>().Value);			
 		}
 
 		private static IConfiguration GetConfiguration() =>
